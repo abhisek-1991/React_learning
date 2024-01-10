@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-// Moved the Todo component outside of DataComponent
-function Todo({ title, description }) {
+function Todo({ id, title }) {
   return (
-    <div>
+    <div key={id}>
       <h1>{title}</h1>
-     
     </div>
   );
 }
 
 function DataComponent() {
   const [todos, setTodos] = useState([]);
+  const specificTodoId = [1,2,3,4]; // Define the specific todo ID here
 
   useEffect(() => {
     axios.get('https://jsonplaceholder.typicode.com/todos/')
       .then(function (res) {
-        setTodos(res.data); // Use res.data directly
+        setTodos(res.data);
+        console.log(res.data); // Logging fetched data
       })
       .catch(function (error) {
         console.error('Error fetching data:', error);
@@ -26,11 +26,14 @@ function DataComponent() {
 
   return (
     <div>
-      {todos.map(todo => (
-        console.log(todos),
-        <Todo key={todo.id} title={todo.title}  />
-        // Use todo.body instead of todo.description for the description
-      ))}
+      {todos.map(todo => {
+        for(let i=0;i<specificTodoId.length;i++){
+        if (todo.id === specificTodoId[i]) {
+          return <Todo key={todo.id} id={todo.id} title={todo.title} />;
+        }
+        }
+        return null; // Render nothing if the IDs don't match
+      })}
     </div>
   );
 }
