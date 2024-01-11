@@ -1,41 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 
-function Todo({ id, title }) {
-  return (
-    <div key={id}>
-      <h1>{title}</h1>
-    </div>
-  );
-}
+const InputBoxWithList = () => {
+  const [inputValue, setInputValue] = useState('');
+  const [items, setItems] = useState([]);
+  console.log(items);
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
 
-function DataComponent() {
-  const [todos, setTodos] = useState([]);
-  const specificTodoId = [1,2,3,4]; // Define the specific todo ID here
-
-  useEffect(() => {
-    axios.get('https://jsonplaceholder.typicode.com/todos/')
-      .then(function (res) {
-        setTodos(res.data);
-        console.log(res.data); // Logging fetched data
-      })
-      .catch(function (error) {
-        console.error('Error fetching data:', error);
-      });
-  }, []);
+  const handleAddItem = () => {
+    if (inputValue.trim() !== '') {
+      setItems([...items, inputValue]);
+      setInputValue('');
+    }
+  };
 
   return (
     <div>
-      {todos.map(todo => {
-        for(let i=0;i<specificTodoId.length;i++){
-        if (todo.id === specificTodoId[i]) {
-          return <Todo key={todo.id} id={todo.id} title={todo.title} />;
-        }
-        }
-        return null; // Render nothing if the IDs don't match
-      })}
+      <label htmlFor="myInput">Type Something:</label>
+      <input
+        type="text"
+        id="myInput"
+        value={inputValue}
+        onChange={handleInputChange}
+      />
+      <button onClick={handleAddItem}>Add to List</button>
+      
+      <ul>
+        {items.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
     </div>
   );
-}
+};
 
-export default DataComponent;
+export default InputBoxWithList;
